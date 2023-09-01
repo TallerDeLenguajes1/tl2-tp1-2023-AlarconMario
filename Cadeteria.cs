@@ -1,5 +1,4 @@
 using System;
-using WebApp.Entidades;
 
 namespace ServicioDeCadeteria
 {
@@ -18,8 +17,45 @@ namespace ServicioDeCadeteria
             this.nombre = nombre;
             this.telf = telf;
             this.cadetes = _cadetes;
+            
         }
 
+        public void AgregarCadete(Cadete cadete)
+        {
+            cadetes.Add(cadete);
+        }
+        public void AsignarPedido(Pedido pedido, Cadete cad)
+        {
+            if (cadetes.Contains(cad))
+            {
+                cad.pedidos.Add(pedido);
+            }
+            else
+            {
+                cadetes.Add(cad);
+                cad.pedidos.Add(pedido);
+            }
+        }
+        public void verCadetes(List<Cadete> cad)
+        {
+            foreach(var c in cad)
+            {
+                Console.WriteLine($"Nombre: {c.Nombre}, ID : {c.Id}, Telf: {c.Telf}, Direccion: {c.Direccion}");
+            }
+        }
+
+        public void ReasignarPedido(Pedido pedido, Cadete cad1, Cadete cad2)
+        {
+            if (cad1.pedidos.Contains(pedido))
+            {
+                cad1.pedidos.RemoveAt(pedido.Num);
+                cad2.pedidos.Add(pedido);
+            }
+            else
+            {
+                cad2.pedidos.Add(pedido);
+            }
+        }
     
     }
 
