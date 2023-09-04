@@ -1,0 +1,6 @@
+Número,Observación,Estado
+1001,"Pedido de prueba 1",En proceso
+1002,"Pedido de prueba 2",Entregado
+1003,"Pedido de prueba 3",En espera
+1004,"Pedido de prueba 4",Cancelado
+1005,"Pedido de prueba 5",En proceso

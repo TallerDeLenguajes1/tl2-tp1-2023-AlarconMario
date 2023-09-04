@@ -1,33 +1,29 @@
 using System;
+using spaceCadeteria;
+using spaceCadete;
+using spaceCliente;
 
-namespace ServicioDeCadeteria
+namespace spacePedido
 {
     public class Pedido
     {
-        private int id;
+        private int nro;
         private string obs;
-        private Cliente clientes;
+        //Cliente cliente;
         private string estado;
-        private Cadete cadetes;
+       
 
-        public int Num { get => id; set => id = value; }
+        public int Nro { get => nro; set => nro = value; }
         public string Obs { get => obs; set => obs = value; }
-        public Cliente Clientes { get => clientes; set => clientes = value; }
+        //public Cliente Clientes { get => cliente; set => cliente = value; }
         public string Estado { get => estado; set => estado = value; }
-        public Cadete Cadete { get => cadetes; set => cadetes = value; }
+       
 
-        public Pedido(int _id, string _obs, string _estado, Cliente _cliente, Cadete _cadetes )
+        public Pedido(int _id, string _obs, string _estado)
         {
-            this.id = _id;
+            this.nro = _id;
             this.obs = _obs;
             this.estado = _estado;
-            this.clientes = _cliente;
-            this.cadetes = _cadetes;
-            
-        }
-
-        public void AgregarPeido(Cliente cliente, Cadete cadete)
-        {
             
         }
         public void verdireccionCliente(Cliente cliente)
@@ -41,6 +37,17 @@ namespace ServicioDeCadeteria
             Console.WriteLine("Direccion: "+ c.Direccion);
             Console.WriteLine("Telefono: "+ c.Telf);
             Console.WriteLine("Dato de Referencia: "+ c.DatoReferencia);
+
+        }
+
+        public enum estadoPedido{
+            SinAsignar,
+            Entregado,
+            EnCamino
+        }
+        
+        
+        public void altaPedido(){
 
         }
     }

@@ -1,6 +1,8 @@
 using System;
+using spacePedido;
+using spaceCadete;
 
-namespace ServicioDeCadeteria
+namespace spaceCliente
 {
     public class Cliente
     {
