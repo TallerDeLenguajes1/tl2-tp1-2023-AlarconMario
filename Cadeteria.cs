@@ -9,174 +9,187 @@ namespace spaceCadeteria
 {
     public class Cadeteria
     {
-        private string nombre;
-        private string telf;
+        private string? nombre;
+        private string? telf;
         private List<Cadete> cadetes;
+        private List<Pedido> pedidos;
 
-        public string Nombre { get => nombre; set => nombre = value; }
-        public string Telf { get => telf; set => telf = value; }
         public List<Cadete> Cadetes { get => cadetes; set => cadetes = value; }
+        public List<Pedido> Pedidos { get => pedidos; set => pedidos = value; }
 
-        public Cadeteria(string nombre, string telf, List<Cadete> _cadetes)
+        public Cadeteria(string nombreArchivoCSV, List<Pedido> _pedidos)
         {
-            this.nombre = nombre;
-            this.telf = telf;
-            this.cadetes = _cadetes;
+            try
+            {
+                string[] lineas = File.ReadAllLines(nombreArchivoCSV);
+
+                string[] lines = File.ReadAllLines(nombreArchivoCSV);
+                if(lines.Length > 0)
+                {
+                    string[] values = lines[0].Split(',');
+                    this.nombre = values[0];
+                    this.telf = values[1];
+                    
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error al cargar datos desde el archivo CSV: " + ex.Message);
+            }
+            pedidos = _pedidos;
+            cadetes = ListaDeCadetes("Cadete.csv");
+
+        }
+
+
+        List<Cadete> ListaDeCadetes(string cadeteCSV)
+        {
+            List<Cadete> lista = new List<Cadete>();
+            try
+            {
+                string[] lines = File.ReadAllLines(cadeteCSV);
+
+                // Inicializa la lista de cadetes y omite la primera línea (cabecera).
+                
+                for (int i = 1; i < lines.Length; i++)
+                {
+                    string[] values = lines[i].Split(',');
+                    if (values.Length >= 4)
+                    {
+                        string nombre = values[0];
+                        int id = int.Parse(values[1]);
+                         string telf = values[2];
+                        string direccion = values[3];
+                       
+                        // Crea una instancia de Cadete y agrégala a la lista de cadetes.
+                        Cadete cadete = new Cadete(id, nombre, direccion, telf);
+                        lista.Add(cadete);
+
+                    }
+                }
+                return lista;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error al cargar datos desde el archivo CSV: " + ex.Message);
+                return lista;
+            }
             
         }
         
-        public void darAltaPedido(List<Pedido> ListaPedidos){
-            //Muestro por pantalla los pedidos que no fueron entregados.
-            int indice = 0;
-            List<Pedido> pedAux = new List<Pedido>();
-            for(int i= 0; i<ListaPedidos.Count; i++)
-            {
-                //Alamaceno los pedidos no entregados en una lista auxiliar.
-                if(ListaPedidos[i].Estado != "Entregado")
-                {
-                    Console.WriteLine($"{indice+1})Pedido Nro {ListaPedidos[i].Nro}");
-                    pedAux.Add(ListaPedidos[i]);
-                    indice++;
-                }
-            }
-            Console.WriteLine("Seleccione un pedido para dar Alta: ");
-
-            if(int.TryParse(Console.ReadLine(), out int indicePedido) && indicePedido >= 1 && indicePedido <= pedAux.Count)
-            {
-                //Elimino el pedido de la lista de pedidos.
-                Pedido pedidoSeleccionado = pedAux[indicePedido-1];
-                ListaPedidos.Remove(pedidoSeleccionado);
-
-                //Elimino el pedido de la lista del cadete.
-                for(int i = 0; i < cadetes.Count; i++)
-                {
-                    for(int j = 0; j < cadetes[i].listPedidos.Count; j++)
-                    {
-                        if(pedidoSeleccionado.Nro == cadetes[i].listPedidos[j].Nro)
-                        {
-                            cadetes[i].listPedidos.RemoveAt(j);
-                            
-                        }
-                    }
-                }
-                Console.WriteLine($"Se dio de Alta el pedido nro {pedidoSeleccionado.Nro} ");
-            }
-            else
-            {
-                Console.WriteLine("Pedido no válido, por favor seleccione un pedido válido");
-            }
-        }   
-        public void asignarPedido(List<Pedido> listPedidos)
+        public void mostrarCadetes(List<Cadete> _cad)
         {
-            Console.WriteLine("Seleccione el pedido que quieres asignar:");
-                    //Muestro la lista de pedidos sin asignar por pantalla.
-                    List<Pedido> auxP = new List<Pedido>();
-                    int ind = 0;
-                    for (int i = 0; i < listPedidos.Count; i++)
-                    {
-                        
-                        if(listPedidos[i].Estado == "SinAsignar")
-                        {   
-                            Console.WriteLine((ind + 1) +")Pedido Nro: "+ listPedidos[i].Nro);
-                            ind++;
-                            auxP.Add(listPedidos[i]);
-                        }
-                        
-                    }
-                    //elijo un pedido para asignarlo.
-                    if (int.TryParse(Console.ReadLine(), out int indiceP) && indiceP >= 1 && indiceP <= auxP.Count)
-                    {
-                        
-                        Pedido pedidoSeleccionado = auxP[indiceP - 1];
-
-                        Console.WriteLine("Seleccione el cadete al que desea asignarlo:");
-                        //Muestro los cadetes por Pantalla
-                        for (int j = 0; j < cadetes.Count; j++)
-                        {
-                            Console.WriteLine((j + 1)+")Nombre del Cadete: "+ cadetes[j].Nombre +" - ID: "+ cadetes[j].Id);
-                        }
-                        //Selecciono al cadete para asignarle el pedido
-                        if (int.TryParse(Console.ReadLine(), out int indiceC) && indiceC >= 1 && indiceC <= cadetes.Count)
-                        {
-                            Cadete cadeteSeleccionado = cadetes[indiceC - 1];
-
-                            pedidoSeleccionado.Estado = "Enviado";
-                            foreach(var l in listPedidos)
-                            {
-                                if(pedidoSeleccionado.Nro == l.Nro)
-                                {
-                                    l.Estado = pedidoSeleccionado.Estado;
-                                }
-                            }
-                            cadeteSeleccionado.listPedidos.Add(pedidoSeleccionado);
-                            
-                            Console.WriteLine("El Pedido Nro "+ pedidoSeleccionado.Nro +" fue asignado a "+ cadeteSeleccionado.Nombre + " - ID: " + cadeteSeleccionado.Id);
-                            listPedidos.RemoveAt(indiceP-1);
-                        }
-                        else
-                        {
-                            Console.WriteLine("Selección de cadete inválida.");
-                        }
-                    }
-                    else
-                    {
-                        Console.WriteLine("Selección de pedido inválida.");
-                    }
+            foreach(var cad in _cad)
+            {
+                Console.WriteLine($"ID : {cad.Id}");
+                Console.WriteLine($"Nombre : {cad.Nombre}");
+                Console.WriteLine($"Telfono : {cad.Telf}");
+            }
         }
-
-        public void Reasignar(List<Pedido> listPeididos)
+        public void Datos(Cadeteria cad)
         {
-            int indice = 1;
-            List<Pedido> listaux = new List<Pedido>();
             
-            //Muestro por pantalla los pedidos y su estado.
-            foreach (var pedido in listPeididos)
+            Console.WriteLine($"Cadeteria: {cad.nombre}");
+            Console.WriteLine($"Telefono: {cad.telf}");
+            
+        }
+        public int JornalACobrar(int _idCadete)
+        {
+            int total = 0;
+
+            foreach(var ped in pedidos)
             {
-                
-                if(pedido.Estado == "EnCamino")
+                if(ped.IdCadete == _idCadete)
                 {
-                    Console.WriteLine(indice+") Pedido Nro: "+pedido.Nro+" - Estado: "+ pedido.Estado);
-                    listaux.Add(pedido);
-                    indice++;
+                    total += 500;
                 }
-            } 
+            }
             
-            Console.WriteLine("Seleccione un pedido para reasignarlo: ");
-            indice = 0;
-            if(int.TryParse(Console.ReadLine(), out int opcPedido)&& opcPedido >= 1 && opcPedido <= listaux.Count)
+            return total;
+        }
+        public int enviosEntregados(int _idCadete)
+        {
+            int contador = 0;
+            foreach(var ped in pedidos)
             {
-                Pedido pedidoSeleccionado = listaux[opcPedido-1];
-                Console.WriteLine("Seleccione el cadete para asignarle el pedido:");
-                for(int i= 0; i< cadetes.Count; i++)
-                {   
-                    Console.WriteLine($"{i+1})Nombre del cadete: {cadetes[i].Nombre} - Id: {cadetes[i].Id}");
-                    
-                    //Elimino el pedido del la lista del cadete.
-                    for(int j = 0; j< cadetes[i].listPedidos.Count; j++)
+                if(ped.IdCadete == _idCadete)
+                {
+                    contador++;
+                }
+            }
+            return contador;
+        }
+        public float promedioDeEnvios(int _idCadete)
+        {
+            float prom = (enviosEntregados(_idCadete) * 100)/pedidos.Count;
+
+
+            return prom;
+        }
+        public void AsignarCadeteAPedido(int _idCadete, int _idPedido){
+            for (int i = 0; i < pedidos.Count; i++)
+            {
+                if (pedidos[i].Nro == _idPedido)
+                {
+                    pedidos[i].IdCadete = _idCadete;
+                    pedidos[i].Estado = "Enviado";
+                }
+            }
+        }
+        public void cambiarEstado(int _nroPedido, string _estado)
+        {
+            for(int i = 0; i < pedidos.Count; i++)
+            {   
+                if(pedidos[i].Nro == _nroPedido)
+                {
+                    if(_estado == "SinAsignar")
                     {
-                        if(pedidoSeleccionado.Nro == cadetes[i].listPedidos[j].Nro)
-                        {
-                            cadetes[i].listPedidos.RemoveAt(j);
-                            j--;
-                        }
-                    }   
+                        pedidos[i].IdCadete = 0;
+                    }
+                    pedidos[i].Estado = _estado;
+                    break;
                 }
-                if(int.TryParse(Console.ReadLine(), out int indCad) && indCad >= 1 && indCad <= cadetes.Count)
+            }
+        }
+        public void reasignarPedido(int _nroPedido, int _idCadete)
+        {
+            for(int i = 0; i < pedidos.Count; i++)
+            {   
+                if(pedidos[i].Nro == _nroPedido)
                 {
-                    Cadete cadeteSeleccionado = cadetes[indCad - 1];
-                    // Asignar el pedido al cadete seleccionado
-                    cadeteSeleccionado.listPedidos.Add(pedidoSeleccionado);
-                    Console.WriteLine($"Pedido {pedidoSeleccionado.Nro} fue reasignado al cadete {cadeteSeleccionado.Nombre}");
+                    pedidos[i].IdCadete = _idCadete;
+                    break;
                 }
-                else
-                {
-                    Console.WriteLine("Cadete no válido, por favor seleccione un cadete válido.");
-                }
-            }   
-            else
+            }
+        }
+        public List<Pedido> pedidosAsignado()
+        {
+            List<Pedido> asignados = new List<Pedido>();
+            foreach(var ped in pedidos)
             {
-                Console.WriteLine("Pedido no válido, por favor seleccione un pedido válido");
-            }                                
+                if(ped.Estado != "SinAsignar")
+                {
+                    asignados.Add(ped);
+                }
+            }
+            return asignados;
+        }
+        public List<Pedido> pedidosSinAsignar()
+        {
+            List<Pedido> sinAsignar = new List<Pedido>();
+            foreach(var ped in pedidos)
+            {
+                if(ped.Estado == "SinAsignar")
+                {
+                    sinAsignar.Add(ped);
+                }
+            }
+            return sinAsignar;
+        }
+        public int selecionarPedido(int indice, List<Pedido> _pedidos)
+        {
+            int pedidoSeleccionado = _pedidos[indice].Nro;
+            return pedidoSeleccionado;
         }
     }  
 }

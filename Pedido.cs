@@ -11,25 +11,28 @@ namespace spacePedido
         private string obs;
         //Cliente cliente;
         private string estado;
+        int idCadete;
        
 
         public int Nro { get => nro; set => nro = value; }
         public string Obs { get => obs; set => obs = value; }
         //public Cliente Clientes { get => cliente; set => cliente = value; }
         public string Estado { get => estado; set => estado = value; }
+        public int IdCadete { get=> idCadete; set => idCadete = value; }
        
 
-        public Pedido(int _id, string _obs, string _estado)
+        public Pedido(int _id, string _obs, string _estado, int _idCadete)
         {
             this.nro = _id;
             this.obs = _obs;
             this.estado = _estado;
+            this.idCadete = _idCadete;
             
         }
-        public void verdireccionCliente(Cliente cliente)
-        {
-            Console.WriteLine("Direccion: "+ cliente.Direccion);
-        }
+        public string verdireccionCliente(Cliente cliente){
+            return cliente.Direccion;
+        } 
+        
         public void verDatosClientes(Cliente c)
         {  
             Console.WriteLine("INFORMACION DEL CLIENTE");
@@ -42,14 +45,10 @@ namespace spacePedido
 
         public enum estadoPedido{
             SinAsignar,
-            Entregado,
-            EnCamino
+            EnCamino,
+            Entregado
         }
         
-        
-        public void altaPedido(){
-
-        }
     }
      
      
