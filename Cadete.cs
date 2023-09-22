@@ -20,12 +20,12 @@ namespace spaceCadete
        
 
      
-        public Cadete(int _id, string _nombre, string _direccion, string _telf)
+        public Cadete(int id, string nombre, string direccion, string telf)
         {
-             id = _id;
-             nombre = _nombre;
-             direccion = _direccion;
-             telf = _telf;
+             this.id = id;
+            this.nombre = nombre;
+            this.direccion = direccion;
+            this.telf = telf;
         }
 
         

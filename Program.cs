@@ -4,6 +4,9 @@ using System;
 using spaceCadeteria;
 using spacePedido;
 using spaceCadete;
+using System.Text.Json;
+using Newtonsoft.Json;
+using spaceAccesoADatos;
 
 
 
@@ -11,14 +14,28 @@ internal class Program
 {
     private static void Main(string[] args)
     {
-    
         
-        List<Pedido> listPedidos = new List<Pedido>();
+        
+        
         Random random = new Random();
         
-        Cadeteria cadeteria = new Cadeteria("Cadeteria.csv",listPedidos );
-        cadeteria.Datos(cadeteria);
-        cadeteria.mostrarCadetes(cadeteria.Cadetes);
+        Console.WriteLine("Cargar Datos: \n1)JSON \n2)CSV");
+        AccesoJson json = new AccesoJson();
+        AccesoCsv cvs = new AccesoCsv();
+        Cadeteria cadeteria = new Cadeteria();
+        if(int.TryParse(Console.ReadLine(), out int opcAcceso) && opcAcceso >0 & opcAcceso <= 2)
+        {
+            if(opcAcceso == 1)
+            {
+                cadeteria = json.CargarInfoCadeteria();
+            }
+            else
+            {
+                cadeteria = cvs.CargarInfoCadeteria();
+            }
+        }
+        
+       
         int numeroAleatorio = 0;
         int num = 0; 
         
@@ -73,7 +90,7 @@ internal class Program
                             {
                                 Console.WriteLine($"{i+1})ID = {cadeteria.Cadetes[i].Id} - {cadeteria.Cadetes[i].Nombre}");
                             }
-                            if(int.TryParse(Console.ReadLine(), out int idCadete) && idCadete > 1 && idCadete <= cadeteria.Cadetes.Count)
+                            if(int.TryParse(Console.ReadLine(), out int idCadete) && idCadete >= 1 && idCadete <= cadeteria.Cadetes.Count)
                             {
                                 int cadeteSelecionado = cadeteria.Cadetes[idCadete-1].Id;
                                 cadeteria.AsignarCadeteAPedido(cadeteSelecionado, pedidoSeleccionado);
